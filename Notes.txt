@@ -1,0 +1,4 @@
+- header files
+- builtin commands
+- system calls
+- print to terminal

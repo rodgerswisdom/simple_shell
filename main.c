@@ -1,24 +1,48 @@
-#include "cell.h"
+#include "main.h"
 
 void main(){
+    pid_t pid = fork();
+    char input[BUFSIZ];
+    
+    while(true){
+        printf("rojsh $>>");
+        fgets(input,sizeof(input), stdin);
+         
+        /**
+         * Toa new line
+         */
 
-    pid_t pid;
+        input[strcspn(input, "\n")] = 0;
 
-    pid = fork();
+        if (strcmp(input, "exit")==0){
+            break;
+                }
+        
+        pid_t pid = fork();
 
-    switch(pid){
-    case -1:
-        perror("fork");
-        exit(EXIT_FAILURE);
-        break;
-    case 0:
-        puts("Child Exiting");
-        exit(EXIT_SUCCESS);
-        break;
-
-    default:
-        printf("Hello form parent process %"PRIdMAX "!! Child process %" PRIdMAX "\n", (intmax_t) getpid(),(intmax_t) pid);
-        puts("Parent exiting");
-        exit(EXIT_SUCCESS);
+        if (pid == 0){
+            execlp(input, input, NULL);
+            perror("Failed");
+            exit(1);
+        } else{
+            wait(NULL);
+        }
     }
+
+     switch(pid){
+                case -1:
+                    exit(EXIT_FAILURE);
+                 break;
+
+                case 0:
+                    printf("Child %" PRIdMAX "\n", (intmax_t) pid);
+                    exit(EXIT_SUCCESS);
+                 break;
+
+                default:
+                    exit(EXIT_SUCCESS);
+                    printf("Parent %" PRIdMAX "\n", (intmax_t) getpid());
+                    break;
+            }
+
 }
